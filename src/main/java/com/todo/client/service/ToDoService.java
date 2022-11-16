@@ -20,7 +20,7 @@ import java.util.List;
 public class ToDoService {
     private final ObjectMapper mapper = new ObjectMapper();
 
-    List<ToDo> selectAll() {
+    public List<ToDo> selectAll() {
         String resultContent = null;
         List<ToDo> toDoList;
         HttpGet httpGet = new HttpGet(ApiUrl.selectAllToDo);
@@ -39,8 +39,31 @@ public class ToDoService {
             });
         } catch (JsonProcessingException e) {
             System.out.println(e.getMessage());
-            return new ArrayList<ToDo>();
+            return new ArrayList<>();
         }
         return toDoList;
+    }
+
+    public ToDo selectById(Integer id) {
+        String resultContent = null;
+        ToDo selectedToDo;
+        HttpGet httpGet = new HttpGet(ApiUrl.selectToDoById + id);
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                HttpEntity entity = response.getEntity();
+                resultContent = EntityUtils.toString(entity);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            selectedToDo = mapper.readValue(resultContent, ToDo.class);
+        } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+        return selectedToDo;
     }
 }

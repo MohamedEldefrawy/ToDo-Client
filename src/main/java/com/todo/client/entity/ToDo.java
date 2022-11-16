@@ -92,4 +92,9 @@ public class ToDo {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "title: " + this.getTitle() + "\n" + "description: " + this.getDescription() + "\n" + "priority: " + this.getPriority().getName() + "\n" + "category: " + this.getCategory().getName();
+    }
 }
