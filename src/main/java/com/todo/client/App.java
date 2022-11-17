@@ -33,17 +33,17 @@ public class App {
 //            System.out.println("No to found");
 
         ToDo toDo = new ToDo();
-        toDo.setCategory(new Category(1,null));
-        toDo.setDescription("testing client app");
-        toDo.setFavourite(false);
-        toDo.setPriority(new Priority(1,null));
-        toDo.setTitle("client app test");
+        toDo.setCategory(new Category(1, null));
+        toDo.setDescription("testing update client app");
+        toDo.setFavourite(true);
+        toDo.setPriority(new Priority(1, null));
+        toDo.setTitle("update client app test");
         toDo.setEndDate(new Date());
         toDo.setStartDate(new Date());
-        ToDo result = toDoService.create(toDo);
-        if (result != null)
-            System.out.println(result.toString());
+        boolean result = toDoService.update(4, toDo);
+        if (result)
+            System.out.println("Updated");
         else
-            System.out.println("Faild to create new Tod");
+            System.out.println("Failed to update new Tod");
     }
 }
