@@ -29,16 +29,8 @@ public class ToDoService {
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public ToDo create(ToDo toDo) {
-        String startDate = simpleDateFormat.format(toDo.getStartDate());
-        String endDate = simpleDateFormat.format(toDo.getEndDate());
-        String request = "{\"title\":\"" + toDo.getTitle()
-                + "\",\"description\":\"" + toDo.getDescription()
-                + "\",\"startDate\":\"" + startDate
-                + "\",\"endDate\":\"" + endDate
-                + "\",\"priority\":{\"id\":\"" + toDo.getPriority().getId()
-                + "\"},\"category\":{\"id\":\"" + toDo.getCategory().getId()
-                + "\"},\"favourite\":" + toDo.isFavourite() + "}";
 
+        String request = prepareRequest(toDo);
         String result;
         HttpPost httpPost = new HttpPost(ApiUrl.createTodo);
         httpPost.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
@@ -64,18 +56,22 @@ public class ToDoService {
         return toDo;
     }
 
-    public boolean update(Integer id, ToDo toDo) {
-        HttpPut httpPut = new HttpPut(ApiUrl.updateToDo + id);
-        String resultContent;
+    private String prepareRequest(ToDo toDo) {
         String startDate = simpleDateFormat.format(toDo.getStartDate());
         String endDate = simpleDateFormat.format(toDo.getEndDate());
-        String request = "{\"title\":\"" + toDo.getTitle()
+        return "{\"title\":\"" + toDo.getTitle()
                 + "\",\"description\":\"" + toDo.getDescription()
                 + "\",\"startDate\":\"" + startDate
                 + "\",\"endDate\":\"" + endDate
                 + "\",\"priority\":{\"id\":\"" + toDo.getPriority().getId()
                 + "\"},\"category\":{\"id\":\"" + toDo.getCategory().getId()
                 + "\"},\"favourite\":" + toDo.isFavourite() + "}";
+    }
+
+    public boolean update(Integer id, ToDo toDo) {
+        HttpPut httpPut = new HttpPut(ApiUrl.updateToDo + id);
+        String resultContent;
+        String request = prepareRequest(toDo);
         httpPut.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -213,7 +209,7 @@ public class ToDoService {
         return toDoList;
     }
 
-    public boolean deletebyId(int id) {
+    public boolean deleteById(int id) {
         HttpDelete httpDelete = new HttpDelete(ApiUrl.deleteToDoById + id);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
@@ -229,7 +225,7 @@ public class ToDoService {
         }
     }
 
-    public boolean deletebyTitle(String title) {
+    public boolean deleteByTitle(String title) {
         HttpDelete httpDelete = new HttpDelete(ApiUrl.deleteToDoByTitle + title);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
