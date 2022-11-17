@@ -135,7 +135,7 @@ public class CategoryService {
     public Category selectByName(String name) {
         String resultContent = null;
         Category selectedCategory;
-        HttpGet httpGet = new HttpGet(ApiUrl.selectToDoByTitle + name);
+        HttpGet httpGet = new HttpGet(ApiUrl.selectCategoryByName + name);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
