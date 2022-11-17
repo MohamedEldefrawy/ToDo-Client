@@ -13,19 +13,19 @@ public class ApiUrl {
     public static final String deleteToDoByTitle = "http://localhost:8080/ToDoWebService_war/items/title/";
 
     // Category Api urls
-    private static final String selectAllCategories = "http://localhost:8080/ToDoWebService_war/categories";
-    private static final String selectCategoryById = "http://localhost:8080/ToDoWebService_war/categories/";
-    private static final String selectCategoryByName = "http://localhost:8080/ToDoWebService_war/categories/name?name=";
-    private static final String createCategory = "http://localhost:8080/ToDoWebService_war/categories";
-    private static final String deleteCategoryById = "http://localhost:8080/ToDoWebService_war/categories/";
-    private static final String updateCategoryById = "http://localhost:8080/ToDoWebService_war/categories/";
+    public static final String selectAllCategories = "http://localhost:8080/ToDoWebService_war/categories";
+    public static final String selectCategoryById = "http://localhost:8080/ToDoWebService_war/categories/";
+    public static final String selectCategoryByName = "http://localhost:8080/ToDoWebService_war/categories/name?name=";
+    public static final String createCategory = "http://localhost:8080/ToDoWebService_war/categories";
+    public static final String deleteCategoryById = "http://localhost:8080/ToDoWebService_war/categories/";
+    public static final String updateCategoryById = "http://localhost:8080/ToDoWebService_war/categories/";
 
     // Priority Api urls
-    private static final String selectAllPriorities = "http://localhost:8080/ToDoWebService_war/priorities";
-    private static final String selectPriorityById = "http://localhost:8080/ToDoWebService_war/priorities/";
-    private static final String selectPriorityByName = "http://localhost:8080/ToDoWebService_war/priorities/name?name=";
-    private static final String createPriority = "http://localhost:8080/ToDoWebService_war/priorities";
-    private static final String deletePriorityById = "http://localhost:8080/ToDoWebService_war/priorities/";
-    private static final String updatePriorityById = "http://localhost:8080/ToDoWebService_war/priorities/";
+    public static final String selectAllPriorities = "http://localhost:8080/ToDoWebService_war/priorities";
+    public static final String selectPriorityById = "http://localhost:8080/ToDoWebService_war/priorities/";
+    public static final String selectPriorityByName = "http://localhost:8080/ToDoWebService_war/priorities/name?name=";
+    public static final String createPriority = "http://localhost:8080/ToDoWebService_war/priorities";
+    public static final String deletePriorityById = "http://localhost:8080/ToDoWebService_war/priorities/";
+    public static final String updatePriorityById = "http://localhost:8080/ToDoWebService_war/priorities/";
 
 }

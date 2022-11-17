@@ -210,15 +210,21 @@ public class ToDoService {
     }
 
     public boolean deleteById(int id) {
+        String resultContent;
+
         HttpDelete httpDelete = new HttpDelete(ApiUrl.deleteToDoById + id);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
-                if (response.getCode() == 204)
-                    return true;
-                else {
-                    System.out.println("No to do found with id: " + id);
+                HttpEntity entity = response.getEntity();
+                resultContent = EntityUtils.toString(entity);
+                if (response.getCode() != 204) {
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
                     return false;
                 }
+                return true;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         } catch (IOException e) {
             return false;
@@ -226,15 +232,21 @@ public class ToDoService {
     }
 
     public boolean deleteByTitle(String title) {
+        String resultContent;
+
         HttpDelete httpDelete = new HttpDelete(ApiUrl.deleteToDoByTitle + title);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
-                if (response.getCode() == 204)
-                    return true;
-                else {
-                    System.out.println("No to do found with title: " + title);
+                HttpEntity entity = response.getEntity();
+                resultContent = EntityUtils.toString(entity);
+                if (response.getCode() != 204) {
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
                     return false;
                 }
+                return true;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         } catch (IOException e) {
             return false;

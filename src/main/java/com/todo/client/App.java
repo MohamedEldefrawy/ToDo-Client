@@ -1,6 +1,5 @@
 package com.todo.client;
 
-import com.todo.client.entity.ToDo;
 import com.todo.client.service.ToDoService;
 
 /**
@@ -41,9 +40,14 @@ public class App {
 //            System.out.println("Updated");
 //        else
 //            System.out.println("Failed to update new Tod");
+//
+//        ToDo toDo = toDoService.selectByTitle("xx");
+//        if (toDo != null)
+//            System.out.println(toDo.toString());
 
-        ToDo toDo = toDoService.selectByTitle("xx");
-        if (toDo != null)
-            System.out.println(toDo.toString());
+        Boolean result = toDoService.deleteByTitle("cc");
+        if (result)
+            System.out.println("Deleted ");
+
     }
 }
