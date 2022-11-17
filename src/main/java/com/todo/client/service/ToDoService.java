@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todo.client.config.ApiUrl;
 import com.todo.client.entity.ToDo;
+import com.todo.client.response.FaildResponse;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpPut;
@@ -26,9 +28,7 @@ public class ToDoService {
     private final ObjectMapper mapper = new ObjectMapper();
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-
     public ToDo create(ToDo toDo) {
-        ToDo todo = null;
         String startDate = simpleDateFormat.format(toDo.getStartDate());
         String endDate = simpleDateFormat.format(toDo.getEndDate());
         String request = "{\"title\":\"" + toDo.getTitle()
@@ -39,16 +39,22 @@ public class ToDoService {
                 + "\"},\"category\":{\"id\":\"" + toDo.getCategory().getId()
                 + "\"},\"favourite\":" + toDo.isFavourite() + "}";
 
-        String result = null;
+        String result;
         HttpPost httpPost = new HttpPost(ApiUrl.createTodo);
         httpPost.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
                 result = EntityUtils.toString(response.getEntity());
+                if (response.getCode() != 201) {
+                    FaildResponse faildResponse = mapper.readValue(result, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
+                    return null;
+                }
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+            return null;
         }
         try {
             toDo = mapper.readValue(result, ToDo.class);
@@ -60,6 +66,7 @@ public class ToDoService {
 
     public boolean update(Integer id, ToDo toDo) {
         HttpPut httpPut = new HttpPut(ApiUrl.updateToDo + id);
+        String resultContent;
         String startDate = simpleDateFormat.format(toDo.getStartDate());
         String endDate = simpleDateFormat.format(toDo.getEndDate());
         String request = "{\"title\":\"" + toDo.getTitle()
@@ -75,50 +82,67 @@ public class ToDoService {
             try (CloseableHttpResponse response = httpclient.execute(httpPut)) {
                 if (response.getCode() == 204)
                     return true;
+                else {
+                    HttpEntity entity = response.getEntity();
+                    resultContent = EntityUtils.toString(entity);
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
+                    return false;
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public List<ToDo> selectAll() {
-        String resultContent = null;
+        String resultContent;
         List<ToDo> toDoList;
         HttpGet httpGet = new HttpGet(ApiUrl.selectAllToDo);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
                 resultContent = EntityUtils.toString(entity);
+                if (response.getCode() != 200) {
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
+                    return new ArrayList<>();
+                }
             } catch (ParseException e) {
-                throw new RuntimeException(e);
+                return new ArrayList<>();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            return new ArrayList<>();
         }
         try {
             toDoList = mapper.readValue(resultContent, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
-            System.out.println(e.getMessage());
             return new ArrayList<>();
         }
         return toDoList;
     }
 
     public ToDo selectById(Integer id) {
-        String resultContent = null;
+        String resultContent;
         ToDo selectedToDo;
         HttpGet httpGet = new HttpGet(ApiUrl.selectToDoById + id);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
                 resultContent = EntityUtils.toString(entity);
+                if (response.getCode() != 200) {
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
+                    return null;
+                }
             } catch (ParseException e) {
-                throw new RuntimeException(e);
+                return null;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
         try {
             selectedToDo = mapper.readValue(resultContent, ToDo.class);
@@ -136,6 +160,11 @@ public class ToDoService {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
                 resultContent = EntityUtils.toString(entity);
+                if (response.getCode() != 200) {
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
+                    return null;
+                }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -151,5 +180,68 @@ public class ToDoService {
         return selectedToDo;
     }
 
+    /**
+     * @param mode represent searching mode 0 for startDate 1 for endDate
+     * @param date String yyyy/MM/dd
+     * @return List of matching items
+     */
+    public List<ToDo> selectByDate(int mode, String date) {
+        String resultContent = null;
+        List<ToDo> toDoList;
+        HttpGet httpGet = new HttpGet(ApiUrl.selectToDoByDate + mode + "&date=" + date);
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                HttpEntity entity = response.getEntity();
+                resultContent = EntityUtils.toString(entity);
+                if (response.getCode() != 200) {
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
+                    return new ArrayList<>();
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            toDoList = mapper.readValue(resultContent, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            return new ArrayList<>();
+        }
+        return toDoList;
+    }
 
+    public boolean deletebyId(int id) {
+        HttpDelete httpDelete = new HttpDelete(ApiUrl.deleteToDoById + id);
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
+                if (response.getCode() == 204)
+                    return true;
+                else {
+                    System.out.println("No to do found with id: " + id);
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean deletebyTitle(String title) {
+        HttpDelete httpDelete = new HttpDelete(ApiUrl.deleteToDoByTitle + title);
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
+                if (response.getCode() == 204)
+                    return true;
+                else {
+                    System.out.println("No to do found with title: " + title);
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }
