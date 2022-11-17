@@ -1,8 +1,5 @@
 package com.todo.client.utils;
 
-import com.swe.todoconsoleapp.entity.enums.Category;
-import com.swe.todoconsoleapp.entity.enums.Priority;
-
 import java.util.Date;
 
 public class InputValidator {
@@ -15,23 +12,22 @@ public class InputValidator {
         }
     }
 
-    public static boolean isValidPriority(String input) {
-        return input.toUpperCase().equals(Priority.HIGH.name())
-                || input.toUpperCase().equals(Priority.MEDIUM.name())
-                || input.toUpperCase().equals(Priority.LOW.name());
-    }
+//    public static boolean isValidPriority(String input) {
+//        return input.toUpperCase().equals(Priority.HIGH.name())
+//                || input.toUpperCase().equals(Priority.MEDIUM.name())
+//                || input.toUpperCase().equals(Priority.LOW.name());
+//    }
 
     public static boolean isValidStartDate(Date startDate) {
         return startDate != null && !startDate.before(new Date());
     }
 
     public static boolean isValidEndDate(Date endDate, Date startDate) {
-
-        return endDate != null && startDate != null && !endDate.equals(startDate);
+        return endDate != null && startDate != null && !endDate.before(startDate);
     }
 
-    public static boolean isValidCategory(String input) {
-        return input.toUpperCase().equals(Category.HOBBY.name()) || input.toUpperCase().equals(Category.WORK.name()) || input.toUpperCase().equals(Category.ROUTINE.name());
-    }
+//    public static boolean isValidCategory(String input) {
+//        return input.toUpperCase().equals(Category.HOBBY.name()) || input.toUpperCase().equals(Category.WORK.name()) || input.toUpperCase().equals(Category.ROUTINE.name());
+//    }
 
 }

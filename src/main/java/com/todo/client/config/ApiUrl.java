@@ -11,6 +11,7 @@ public class ApiUrl {
 
     public static final String deleteToDoById = "http://localhost:8080/ToDoWebService_war/items/";
     public static final String deleteToDoByTitle = "http://localhost:8080/ToDoWebService_war/items/title/";
+    public static final String selectToDoByPriority = "http://localhost:8080/ToDoWebService_war/items/priority/";
 
     // Category Api urls
     public static final String selectAllCategories = "http://localhost:8080/ToDoWebService_war/categories";

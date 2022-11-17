@@ -27,6 +27,8 @@ import java.util.List;
 public class ToDoService {
     private final ObjectMapper mapper = new ObjectMapper();
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final PriorityService priorityService = new PriorityService();
+    private final CategoryService categoryService = new CategoryService();
 
     public ToDo create(ToDo toDo) {
 
@@ -251,5 +253,33 @@ public class ToDoService {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public List<ToDo> selectByPriority(String priority) {
+        String resultContent;
+        List<ToDo> toDoList;
+        HttpGet httpGet = new HttpGet(ApiUrl.selectToDoByPriority + priority);
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                HttpEntity entity = response.getEntity();
+                resultContent = EntityUtils.toString(entity);
+                if (response.getCode() != 200) {
+                    FaildResponse faildResponse = mapper.readValue(resultContent, FaildResponse.class);
+                    System.out.println(faildResponse.getMessage());
+                    return new ArrayList<>();
+                }
+            } catch (ParseException e) {
+                return new ArrayList<>();
+            }
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+        try {
+            toDoList = mapper.readValue(resultContent, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            return new ArrayList<>();
+        }
+        return toDoList;
     }
 }

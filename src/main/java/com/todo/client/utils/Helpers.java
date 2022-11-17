@@ -1,6 +1,6 @@
 package com.todo.client.utils;
 
-import com.swe.todoconsoleapp.exception.NoDateAssignedException;
+import com.todo.client.exception.NoDateAssignedException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
