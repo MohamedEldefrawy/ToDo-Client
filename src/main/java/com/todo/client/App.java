@@ -15,47 +15,6 @@ public class App {
 
     public static void main(String[] args) {
         ToDoService toDoService = new ToDoService();
-//        List<ToDo> toDoList = toDoService.selectAll();
-//        for (ToDo todo : toDoList
-//        ) {
-//            System.out.println(todo.toString());
-//        }
-//
-//        ToDo toDo = toDoService.selectById(3);
-//        if (toDo != null)
-//            System.out.println(toDo.toString());
-//        else
-//            System.out.println("No to found");
-
-//
-//        ToDo toDo = toDoService.selectByTitle("xx");
-//        if (toDo != null)
-//            System.out.println(toDo.toString());
-//        else
-//            System.out.println("No to found");
-//
-//        ToDo toDo = new ToDo();
-//        toDo.setCategory(new Category(1, null));
-//        toDo.setDescription("testing update client app");
-//        toDo.setFavourite(true);
-//        toDo.setPriority(new Priority(1, null));
-//        toDo.setTitle("update client app test");
-//        toDo.setEndDate(new Date());
-//        toDo.setStartDate(new Date());
-//        boolean result = toDoService.update(4, toDo);
-//        if (result)
-//            System.out.println("Updated");
-//        else
-//            System.out.println("Failed to update new Tod");
-//
-//        ToDo toDo = toDoService.selectByTitle("xx");
-//        if (toDo != null)
-//            System.out.println(toDo.toString());
-
-//        Boolean result = toDoService.deleteByTitle("cc");
-//        if (result)
-//            System.out.println("Deleted ");
-
         while (true) {
             Integer result = MenuPrinter.printMainMenu();
             switch (result) {
@@ -81,7 +40,6 @@ public class App {
                 case 5:
 //                    MenuPrinter.printResults(toDoService.selectTopFiveNearestByStartDate());
                     break;
-// Filter by title
                 case 6: {
                     String selectedTitle = MenuPrinter.printFindByMenu(Criteria.TITLE.name());
                     ToDo selectedTodo = toDoService.selectByTitle(selectedTitle);
@@ -94,31 +52,26 @@ public class App {
                     }
                     break;
                 }
-// Filter by start date
                 case 7:
                     String selectedStartDate = MenuPrinter.printFindByMenu(Criteria.START_DATE.name());
                     List<ToDo> selectedToDos = toDoService.selectByDate(0, selectedStartDate);
                     MenuPrinter.printResults(selectedToDos);
                     MenuPrinter.resetMenu();
                     break;
-// Filter by end date
                 case 8:
                     String selectedDate = MenuPrinter.printFindByMenu(Criteria.START_DATE.name());
                     List<ToDo> toDos = toDoService.selectByDate(1, selectedDate);
                     MenuPrinter.printResults(toDos);
                     MenuPrinter.resetMenu();
                     break;
-// Filter by priority
                 case 9:
                     String selectedPriority = MenuPrinter.printFindByMenu(Criteria.PRIORITY.name());
                     List<ToDo> priorityToDos = toDoService.selectByPriority(selectedPriority.toUpperCase());
                     if (priorityToDos != null) {
                         MenuPrinter.printResults(priorityToDos);
                         MenuPrinter.resetMenu();
-                    } else {
-                        System.out.println("No todos found with the selected priority: " + selectedPriority);
-                        MenuPrinter.resetMenu();
                     }
+                    MenuPrinter.resetMenu();
                     break;
                 case 10: {
 //                    String[] updatedValue = MenuPrinter.updateCategory();

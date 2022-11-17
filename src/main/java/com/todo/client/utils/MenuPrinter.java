@@ -77,11 +77,10 @@ public class MenuPrinter {
     }
 
     public static void printResults(List<ToDo> toDos) {
-
-        if (toDos == null || toDos.size() == 0) System.out.println("No toDos found");
-        else for (ToDo toDo : toDos) {
-            printResults(toDo);
-        }
+        if (toDos != null || toDos.size() > 0)
+            for (ToDo toDo : toDos) {
+                printResults(toDo);
+            }
     }
 
     public static void resetMenu() {
