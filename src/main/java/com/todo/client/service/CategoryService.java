@@ -3,7 +3,8 @@ package com.todo.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.todo.client.config.ApiUrl;
+import com.todo.client.config.ApiUrlConfig;
+import com.todo.client.config.ApplicationContextConfig;
 import com.todo.client.entity.Category;
 import com.todo.client.response.FaildResponse;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
@@ -18,6 +19,7 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,12 +27,14 @@ import java.util.List;
 
 public class CategoryService {
     private final ObjectMapper mapper = new ObjectMapper();
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+    ApiUrlConfig apiUrlConfig = context.getBean(ApiUrlConfig.class);
 
     public Category create(Category category) {
 
         String request = "{\"name\":\"" + category.getName() + "}";
         String result;
-        HttpPost httpPost = new HttpPost(ApiUrl.createCategory);
+        HttpPost httpPost = new HttpPost(apiUrlConfig.createCategory);
         httpPost.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -58,7 +62,7 @@ public class CategoryService {
 
         String request = "{\"name\":\"" + category.getName() + "}";
         String result;
-        HttpPut httpPut = new HttpPut(ApiUrl.updateCategoryById + id);
+        HttpPut httpPut = new HttpPut(apiUrlConfig.updateCategoryById + id);
         httpPut.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -80,7 +84,7 @@ public class CategoryService {
     public List<Category> selectAll() {
         String resultContent;
         List<Category> categories;
-        HttpGet httpGet = new HttpGet(ApiUrl.selectAllCategories);
+        HttpGet httpGet = new HttpGet(apiUrlConfig.selectAllCategories);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
@@ -108,7 +112,7 @@ public class CategoryService {
     public Category selectById(Integer id) {
         String resultContent;
         Category selectedCategory;
-        HttpGet httpGet = new HttpGet(ApiUrl.selectCategoryById + id);
+        HttpGet httpGet = new HttpGet(apiUrlConfig.selectCategoryById + id);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
@@ -135,7 +139,7 @@ public class CategoryService {
     public Category selectByName(String name) {
         String resultContent = null;
         Category selectedCategory;
-        HttpGet httpGet = new HttpGet(ApiUrl.selectCategoryByName + name);
+        HttpGet httpGet = new HttpGet(apiUrlConfig.selectCategoryByName + name);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
@@ -163,7 +167,7 @@ public class CategoryService {
     public boolean deleteById(int id) {
         String resultContent;
 
-        HttpDelete httpDelete = new HttpDelete(ApiUrl.deleteCategoryById + id);
+        HttpDelete httpDelete = new HttpDelete(apiUrlConfig.deleteCategoryById + id);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
                 HttpEntity entity = response.getEntity();

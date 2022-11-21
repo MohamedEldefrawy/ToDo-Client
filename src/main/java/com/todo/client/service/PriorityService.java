@@ -3,7 +3,8 @@ package com.todo.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.todo.client.config.ApiUrl;
+import com.todo.client.config.ApiUrlConfig;
+import com.todo.client.config.ApplicationContextConfig;
 import com.todo.client.entity.Priority;
 import com.todo.client.response.FaildResponse;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
@@ -18,6 +19,7 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,12 +27,14 @@ import java.util.List;
 
 public class PriorityService {
     private final ObjectMapper mapper = new ObjectMapper();
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+    ApiUrlConfig apiUrlConfig = context.getBean(ApiUrlConfig.class);
 
     public Priority create(Priority priority) {
 
         String request = "{\"name\":\"" + priority.getName() + "}";
         String result;
-        HttpPost httpPost = new HttpPost(ApiUrl.createPriority);
+        HttpPost httpPost = new HttpPost(apiUrlConfig.createPriority);
         httpPost.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -58,7 +62,7 @@ public class PriorityService {
 
         String request = "{\"name\":\"" + priority.getName() + "}";
         String result;
-        HttpPut httpPut = new HttpPut(ApiUrl.updatePriorityById + id);
+        HttpPut httpPut = new HttpPut(apiUrlConfig.updatePriorityById + id);
         httpPut.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -80,7 +84,7 @@ public class PriorityService {
     public List<Priority> selectAll() {
         String resultContent;
         List<Priority> priorities;
-        HttpGet httpGet = new HttpGet(ApiUrl.selectAllPriorities);
+        HttpGet httpGet = new HttpGet(apiUrlConfig.selectAllPriorities);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
@@ -108,7 +112,7 @@ public class PriorityService {
     public Priority selectById(Integer id) {
         String resultContent;
         Priority selectedPriority;
-        HttpGet httpGet = new HttpGet(ApiUrl.selectPriorityById + id);
+        HttpGet httpGet = new HttpGet(apiUrlConfig.selectPriorityById + id);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
@@ -135,7 +139,7 @@ public class PriorityService {
     public Priority selectByName(String name) {
         String resultContent = null;
         Priority selectedPriority;
-        HttpGet httpGet = new HttpGet(ApiUrl.selectPriorityByName + name);
+        HttpGet httpGet = new HttpGet(apiUrlConfig.selectPriorityByName + name);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
@@ -163,7 +167,7 @@ public class PriorityService {
     public boolean deleteById(int id) {
         String resultContent;
 
-        HttpDelete httpDelete = new HttpDelete(ApiUrl.deletePriorityById + id);
+        HttpDelete httpDelete = new HttpDelete(apiUrlConfig.deletePriorityById + id);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpDelete)) {
                 HttpEntity entity = response.getEntity();
