@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todo.client.config.ApiUrlConfig;
-import com.todo.client.config.ApplicationContextConfig;
 import com.todo.client.entity.Category;
 import com.todo.client.response.FaildResponse;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
@@ -19,8 +18,6 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,13 +27,13 @@ import java.util.List;
 @Service
 public class CategoryService {
     private final ObjectMapper mapper = new ObjectMapper();
-    private final ApiUrlConfig apiUrlConfig ;
+    private final ApiUrlConfig apiUrlConfig;
+
     public CategoryService(ApiUrlConfig apiUrlConfig) {
         this.apiUrlConfig = apiUrlConfig;
     }
 
     public Category create(Category category) {
-
         String request = "{\"name\":\"" + category.getName() + "}";
         String result;
         HttpPost httpPost = new HttpPost(apiUrlConfig.createCategory);

@@ -31,11 +31,11 @@ public class ToDoService {
 
     private final ApiUrlConfig apiUrlConfig;
 
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     public ToDoService(ApiUrlConfig apiUrlConfig) {
         this.apiUrlConfig = apiUrlConfig;
     }
-
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public ToDo create(ToDo toDo) {
 
