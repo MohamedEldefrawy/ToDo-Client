@@ -7,18 +7,24 @@ import com.todo.client.exception.NoDateAssignedException;
 import com.todo.client.service.CategoryService;
 import com.todo.client.service.PriorityService;
 import com.todo.client.service.ToDoService;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+@Component
 public class MenuPrinter {
 
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final PriorityService priorityService = new PriorityService();
-    private static final CategoryService categoryService = new CategoryService();
+    private  final Scanner scanner = new Scanner(System.in);
+    private  final PriorityService priorityService;
+    private  final CategoryService categoryService;
+    public MenuPrinter(PriorityService priorityService, CategoryService categoryService) {
+        this.priorityService = priorityService;
+        this.categoryService = categoryService;
+    }
 
-    public static Integer printMainMenu() {
+    public  Integer printMainMenu() {
         String input = "";
         do {
             System.out.println("Please select from menu:");
@@ -39,12 +45,12 @@ public class MenuPrinter {
         return Integer.parseInt(input);
     }
 
-    public static String printFindByMenu(String criteria) {
+    public  String printFindByMenu(String criteria) {
         System.out.println("Please enter todo " + criteria + ": ");
         return scanner.nextLine();
     }
 
-    public static void printResults(ToDo toDo) {
+    public  void printResults(ToDo toDo) {
         System.out.println("title: " + toDo.getTitle());
         System.out.println("description: " + toDo.getTitle());
         try {
@@ -76,20 +82,20 @@ public class MenuPrinter {
         System.out.println("--------");
     }
 
-    public static void printResults(List<ToDo> toDos) {
+    public  void printResults(List<ToDo> toDos) {
         if (toDos != null || toDos.size() > 0)
             for (ToDo toDo : toDos) {
                 printResults(toDo);
             }
     }
 
-    public static void resetMenu() {
+    public  void resetMenu() {
         System.out.println("==========");
         System.out.println("press ENTER to return to main menu");
         scanner.nextLine();
     }
 
-    public static ToDo createToDoMenu() {
+    public  ToDo createToDoMenu() {
         System.out.println("==========");
         System.out.print("Please Enter ToDO's Title: ");
         String title = scanner.nextLine();
@@ -148,8 +154,7 @@ public class MenuPrinter {
         return new ToDo(title, description, startDate, endDate, selectedPriority, selectedCategory, favourite);
     }
 
-    public static String[] updateCategory() {
-        ToDoService toDoService = new ToDoService();
+    public  String[] updateCategory(ToDoService toDoService) {
         String[] updatedValue = new String[2];
         System.out.println("==========");
         System.out.print("Please Enter ToDO's Title you want to update Category: ");
@@ -172,7 +177,7 @@ public class MenuPrinter {
         return null;
     }
 
-    public static String addToFavourite() {
+    public  String addToFavourite() {
         System.out.println("==========");
         System.out.print("Please Enter ToDO's Title you want to add to favourite: ");
         String title = scanner.nextLine();

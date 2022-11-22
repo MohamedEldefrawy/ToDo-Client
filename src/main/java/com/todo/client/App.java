@@ -1,80 +1,81 @@
 package com.todo.client;
 
+import com.todo.client.config.ApplicationContextConfig;
 import com.todo.client.entity.Criteria;
 import com.todo.client.entity.ToDo;
 import com.todo.client.service.ToDoService;
 import com.todo.client.utils.MenuPrinter;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 
-/**
- * Hello world!
- */
 public class App {
-    private static final ToDoService toDoService = new ToDoService();
 
     public static void main(String[] args) {
-        ToDoService toDoService = new ToDoService();
+        AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+        ToDoService toDoService = annotationConfigApplicationContext.getBean(ToDoService.class);
+        MenuPrinter printer = annotationConfigApplicationContext.getBean(MenuPrinter.class);
+
         while (true) {
-            Integer result = MenuPrinter.printMainMenu();
+            Integer result = printer.printMainMenu();
             switch (result) {
                 case 1:
-                    ToDo todo = MenuPrinter.createToDoMenu();
+                    ToDo todo = printer.createToDoMenu();
                     toDoService.create(todo);
-                    MenuPrinter.resetMenu();
+                    printer.resetMenu();
                     break;
                 case 2: {
-                    ToDo toDo = MenuPrinter.createToDoMenu();
+                    ToDo toDo = printer.createToDoMenu();
                     ToDo selectedTodo = toDoService.selectByTitle(toDo.getTitle());
                     toDoService.update(selectedTodo.getId(), toDo);
                     break;
                 }
                 case 3:
-                    String deletedToDoTitle = MenuPrinter.printFindByMenu(Criteria.TITLE.name());
+                    String deletedToDoTitle = printer.printFindByMenu(Criteria.TITLE.name());
                     toDoService.deleteByTitle(deletedToDoTitle);
-                    MenuPrinter.resetMenu();
+                    printer.resetMenu();
                     break;
                 case 4:
-                    MenuPrinter.printResults(toDoService.selectAll());
+                    printer.printResults(toDoService.selectAll());
                     break;
                 case 5:
-//                    MenuPrinter.printResults(toDoService.selectTopFiveNearestByStartDate());
+//                    printer.printResults(toDoService.selectTopFiveNearestByStartDate());
                     break;
                 case 6: {
-                    String selectedTitle = MenuPrinter.printFindByMenu(Criteria.TITLE.name());
+                    String selectedTitle = printer.printFindByMenu(Criteria.TITLE.name());
                     ToDo selectedTodo = toDoService.selectByTitle(selectedTitle);
                     if (selectedTodo != null) {
-                        MenuPrinter.printResults(selectedTodo);
-                        MenuPrinter.resetMenu();
+                        printer.printResults(selectedTodo);
+                        printer.resetMenu();
                     } else {
                         System.out.println("No todo found with title: " + selectedTitle);
-                        MenuPrinter.resetMenu();
+                        printer.resetMenu();
                     }
                     break;
                 }
                 case 7:
-                    String selectedStartDate = MenuPrinter.printFindByMenu(Criteria.START_DATE.name());
+                    String selectedStartDate = printer.printFindByMenu(Criteria.START_DATE.name());
                     List<ToDo> selectedToDos = toDoService.selectByDate(0, selectedStartDate);
-                    MenuPrinter.printResults(selectedToDos);
-                    MenuPrinter.resetMenu();
+                    printer.printResults(selectedToDos);
+                    printer.resetMenu();
                     break;
                 case 8:
-                    String selectedDate = MenuPrinter.printFindByMenu(Criteria.START_DATE.name());
+                    String selectedDate = printer.printFindByMenu(Criteria.START_DATE.name());
                     List<ToDo> toDos = toDoService.selectByDate(1, selectedDate);
-                    MenuPrinter.printResults(toDos);
-                    MenuPrinter.resetMenu();
+                    printer.printResults(toDos);
+                    printer.resetMenu();
                     break;
                 case 9:
-                    String selectedPriority = MenuPrinter.printFindByMenu(Criteria.PRIORITY.name());
+                    String selectedPriority = printer.printFindByMenu(Criteria.PRIORITY.name());
                     List<ToDo> priorityToDos = toDoService.selectByPriority(selectedPriority.toUpperCase());
                     if (priorityToDos != null) {
-                        MenuPrinter.printResults(priorityToDos);
-                        MenuPrinter.resetMenu();
+                        printer.printResults(priorityToDos);
+                        printer.resetMenu();
                     }
-                    MenuPrinter.resetMenu();
+                    printer.resetMenu();
                     break;
                 case 10: {
-//                    String[] updatedValue = MenuPrinter.updateCategory();
+//                    String[] updatedValue = printer.updateCategory();
 //                    if (updatedValue != null) {
 //                        String updateToDoTitle = updatedValue[0];
 //                        String updateToDoCategory = updatedValue[1];
@@ -88,7 +89,7 @@ public class App {
                 }
 // add to favourite
                 case 11:
-//                String updateToDoTitle = MenuPrinter.printFindByMenu(Criteria.TITLE.name());
+//                String updateToDoTitle = printer.printFindByMenu(Criteria.TITLE.name());
 //                    boolean isAdded = toDoService.addItemToFavourite(updateToDoTitle);
 //                    if (isAdded)
 //                        System.out.println("Item has been added successfully.");

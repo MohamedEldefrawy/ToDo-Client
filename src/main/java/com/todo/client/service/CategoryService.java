@@ -19,16 +19,21 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class CategoryService {
     private final ObjectMapper mapper = new ObjectMapper();
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
-    ApiUrlConfig apiUrlConfig = context.getBean(ApiUrlConfig.class);
+    private final ApiUrlConfig apiUrlConfig ;
+    public CategoryService(ApiUrlConfig apiUrlConfig) {
+        this.apiUrlConfig = apiUrlConfig;
+    }
 
     public Category create(Category category) {
 

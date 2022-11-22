@@ -7,7 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource("classpath:urls.properties")
 public class ApiUrlConfig {
-    //    Todo items Api urls
     @Value("${todo.selectAll}")
     public String selectAllToDo;
     @Value("${todo.selectById}")

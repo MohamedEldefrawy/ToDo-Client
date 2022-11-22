@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todo.client.config.ApiUrlConfig;
-import com.todo.client.config.ApplicationContextConfig;
 import com.todo.client.entity.ToDo;
 import com.todo.client.response.FaildResponse;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
@@ -19,26 +18,30 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ToDoService {
     private final ObjectMapper mapper = new ObjectMapper();
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
-    ApiUrlConfig apiUrlConfig = context.getBean(ApiUrlConfig.class);
+
+    private final ApiUrlConfig apiUrlConfig;
+
+    public ToDoService(ApiUrlConfig apiUrlConfig) {
+        this.apiUrlConfig = apiUrlConfig;
+    }
+
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private final PriorityService priorityService = new PriorityService();
-    private final CategoryService categoryService = new CategoryService();
 
     public ToDo create(ToDo toDo) {
 
         String request = prepareRequest(toDo);
         String result;
-        HttpPost httpPost = new HttpPost(apiUrlConfig.createTodo);
+        HttpPost httpPost = new HttpPost(this.apiUrlConfig.createTodo);
         httpPost.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -75,7 +78,7 @@ public class ToDoService {
     }
 
     public boolean update(Integer id, ToDo toDo) {
-        HttpPut httpPut = new HttpPut(apiUrlConfig.updateToDo + id);
+        HttpPut httpPut = new HttpPut(this.apiUrlConfig.updateToDo + id);
         String resultContent;
         String request = prepareRequest(toDo);
         httpPut.setEntity(new StringEntity(request, ContentType.APPLICATION_JSON));
@@ -102,7 +105,7 @@ public class ToDoService {
     public List<ToDo> selectAll() {
         String resultContent;
         List<ToDo> toDoList;
-        HttpGet httpGet = new HttpGet(apiUrlConfig.selectAllToDo);
+        HttpGet httpGet = new HttpGet(this.apiUrlConfig.selectAllToDo);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
